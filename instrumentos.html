@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎵 Explorador de Instrumentos Musicales 🎵</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 900px;
+            width: 100%;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .header {
+            text-align: center;
+            color: #334155; /* Darker blue-gray */
+        }
+        .family-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            cursor: pointer;
+        }
+        .family-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        .button-primary {
+            background-color: #6366f1; /* Indigo */
+            color: white;
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+        }
+        .button-primary:hover {
+            background-color: #4f46e5; /* Darker indigo */
+            transform: translateY(-2px);
+        }
+        .button-primary:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+        .button-secondary {
+            background-color: #e2e8f0; /* Light gray */
+            color: #475569; /* Slate gray */
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .button-secondary:hover {
+            background-color: #cbd5e1; /* Medium gray */
+        }
+        .quiz-option {
+            background-color: #f8fafc; /* Lighter gray */
+            border: 2px solid #e2e8f0;
+            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+        }
+        .quiz-option:hover {
+            background-color: #eff6ff; /* Lightest blue */
+            border-color: #93c5fd; /* Light blue */
+            transform: translateY(-2px);
+        }
+        .quiz-option.selected {
+            background-color: #bfdbfe; /* Accent blue */
+            border-color: #3b82f6; /* Strong blue */
+        }
+        .quiz-option.correct {
+            background-color: #dcfce7; /* Light green */
+            border-color: #22c55e; /* Strong green */
+        }
+        .quiz-option.incorrect {
+            background-color: #fee2e2; /* Light red */
+            border-color: #ef4444; /* Strong red */
+        }
+        .modal {
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        .progress-bar-container {
+            background-color: #e2e8f0;
+            border-radius: 9999px; /* Full rounded corners */
+            height: 12px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background-color: #3b82f6; /* Blue */
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.5s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-100 to-purple-100 min-h-screen flex items-center justify-center p-4">
+
+    <div id="app" class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="text-4xl font-extrabold text-gray-800 mb-2">🎵 Explorador Musical 🎵</h1>
+            <p class="text-lg text-gray-600">¡Aprende y juega con los instrumentos!</p>
+        </div>
+
+        <!-- Main Navigation/View Selector -->
+        <div class="flex justify-center gap-4 mb-6">
+            <button id="learnBtn" class="button-primary">Aprender</button>
+            <button id="quizBtn" class="button-primary">Jugar</button>
+        </div>
+
+        <!-- Learning Section -->
+        <div id="learnSection" class="hidden">
+            <h2 class="text-3xl font-bold text-gray-700 mb-6 text-center">Familias de Instrumentos</h2>
+            <div id="familyList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Family cards will be injected here by JS -->
+            </div>
+            <div id="instrumentDetailModal" class="fixed inset-0 hidden z-50 modal">
+                <div class="modal-content p-8 max-w-lg w-full text-center">
+                    <h3 id="detailFamilyName" class="text-3xl font-bold text-gray-800 mb-4"></h3>
+                    <p id="detailFamilyDescription" class="text-gray-700 mb-6"></p>
+                    <h4 class="text-2xl font-semibold text-gray-700 mb-4">Ejemplos de Instrumentos:</h4>
+                    <div id="detailInstrumentList" class="grid grid-cols-2 gap-4 mb-6">
+                        <!-- Instruments will be injected here -->
+                    </div>
+                    <button id="closeDetailModal" class="button-primary">Cerrar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div id="quizSection" class="hidden">
+            <h2 class="text-3xl font-bold text-gray-700 mb-6 text-center">¡Adivina el Sonido!</h2>
+
+            <div class="flex justify-between items-center mb-6">
+                <div class="text-xl font-semibold text-gray-700">Puntuación: <span id="score">0</span></div>
+                <div class="text-xl font-semibold text-gray-700">Pregunta <span id="currentQuestion">1</span> / <span id="totalQuestions">10</span></div>
+            </div>
+
+            <div class="progress-bar-container mb-6">
+                <div id="progressBar" class="progress-bar" style="width: 0%;"></div>
+            </div>
+
+            <div class="bg-blue-50 p-6 rounded-xl shadow-inner mb-8 text-center">
+                <p class="text-2xl font-semibold text-blue-800 mb-4">Escucha el sonido:</p>
+                <button id="playAudioBtn" class="button-primary flex items-center justify-center mx-auto text-2xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                    </svg>
+                    Reproducir Sonido
+                </button>
+            </div>
+
+            <div id="quizOptions" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <!-- Quiz options will be injected here by JS -->
+            </div>
+
+            <div class="flex justify-center gap-4">
+                <button id="checkAnswerBtn" class="button-primary opacity-50 cursor-not-allowed" disabled>Comprobar Respuesta</button>
+                <button id="nextQuestionBtn" class="button-secondary hidden">Siguiente Pregunta</button>
+            </div>
+
+            <div id="feedbackMessage" class="mt-6 text-center text-2xl font-bold">
+                <!-- Feedback message will appear here -->
+            </div>
+
+            <div id="quizResultModal" class="fixed inset-0 hidden z-50 modal">
+                <div class="modal-content p-8 max-w-md w-full text-center">
+                    <h3 id="resultTitle" class="text-3xl font-bold text-gray-800 mb-4"></h3>
+                    <p id="resultScore" class="text-2xl text-gray-700 mb-6"></p>
+                    <button id="restartQuizBtn" class="button-primary">Volver a Jugar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables for Firebase (provided by the Canvas environment)
+        // These are placeholders for the actual variables that will be injected by the environment.
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // Firebase imports (will be handled by the Canvas environment for HTML)
+        // In a real HTML file, you would import these via <script type="module">
+        // For this environment, assume they are available or will be provided.
+        // For now, we'll simulate the Firebase setup for local development.
+
+        // Mock Firebase (for local testing without actual Firebase setup)
+        const mockFirebase = {
+            initializeApp: (config) => { console.log("Firebase initialized (mock)", config); return {}; },
+            getAuth: (app) => { console.log("Auth service obtained (mock)"); return {}; },
+            signInWithCustomToken: async (auth, token) => { console.log("Signed in with custom token (mock)", token); },
+            signInAnonymously: async (auth) => { console.log("Signed in anonymously (mock)"); },
+            onAuthStateChanged: (auth, callback) => {
+                console.log("Auth state listener set up (mock)");
+                // Simulate an auth state change after a short delay
+                setTimeout(() => {
+                    callback({ uid: 'mock-user-id', displayName: 'Mock User' });
+                }, 100);
+            },
+            getFirestore: (app) => { console.log("Firestore service obtained (mock)"); return {}; },
+            collection: (db, path) => { console.log("Collection ref (mock)", path); return {}; },
+            doc: (db, path, id) => { console.log("Doc ref (mock)", path, id); return {}; },
+            setDoc: async (docRef, data) => { console.log("Doc set (mock)", docRef, data); },
+            getDoc: async (docRef) => { console.log("Doc get (mock)", docRef); return { exists: () => false, data: () => null }; },
+            onSnapshot: (queryRef, callback) => {
+                console.log("Snapshot listener set up (mock)");
+                // Simulate initial data
+                setTimeout(() => {
+                    callback({
+                        docs: [
+                            { id: 'mock-doc-1', data: () => ({ score: 0, level: 1 }) }
+                        ]
+                    });
+                }, 200);
+                return () => console.log("Snapshot listener unsubscribed (mock)");
+            }
+        };
+
+        // Use the mock Firebase if the global variables are not defined (e.g., local development)
+        const firebaseApp = firebaseConfig ? firebaseConfig : mockFirebase.initializeApp({});
+        const db = firebaseConfig ? mockFirebase.getFirestore(firebaseApp) : mockFirebase.getFirestore({}); // Use mock for db
+        const auth = firebaseConfig ? mockFirebase.getAuth(firebaseApp) : mockFirebase.getAuth({}); // Use mock for auth
+
+        let currentUserId = null;
+        let isAuthReady = false;
+
+        // Authenticate user
+        async function authenticateUser() {
+            try {
+                if (initialAuthToken) {
+                    await mockFirebase.signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await mockFirebase.signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Firebase authentication error:", error);
+                // Fallback to anonymous sign-in if custom token fails
+                await mockFirebase.signInAnonymously(auth);
+            }
+        }
+
+        // Listen for auth state changes
+        mockFirebase.onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUserId = user.uid;
+                console.log("User authenticated:", currentUserId);
+            } else {
+                currentUserId = crypto.randomUUID(); // Generate a random ID for unauthenticated users
+                console.log("User not authenticated, using random ID:", currentUserId);
+            }
+            isAuthReady = true;
+            // Now that auth is ready, you can fetch/set user data if needed
+            // For this app, we don't need persistent user data beyond the session score.
+        });
+
+        // --- Instrument Data ---
+        const instrumentFamilies = [
+            {
+                name: "Cuerda",
+                description: "Los instrumentos de cuerda producen sonido mediante la vibración de sus cuerdas. Estas vibraciones pueden ser causadas al frotarlas con un arco, pulsarlas con los dedos o un plectro, o golpearlas.",
+                icon: "🎻",
+                instruments: [
+                    { name: "Violín", sound: "sounds/violin.mp3" },
+                    { name: "Guitarra", sound: "sounds/guitar.mp3" },
+                    { name: "Arpa", sound: "sounds/harp.mp3" },
+                    { name: "Piano", sound: "sounds/piano.mp3" }
+                ]
+            },
+            {
+                name: "Viento Madera",
+                description: "Estos instrumentos producen sonido cuando el aire pasa a través de una lengüeta (simple o doble) o a través de un agujero, haciendo vibrar una columna de aire dentro del instrumento.",
+                icon: "🎷",
+                instruments: [
+                    { name: "Flauta", sound: "sounds/flute.mp3" },
+                    { name: "Clarinete", sound: "sounds/clarinet.mp3" },
+                    { name: "Fagot", sound: "sounds/bassoon.mp3" },
+                    { name: "Saxofón", sound: "sounds/saxophone.mp3" }
+                ]
+            },
+            {
+                name: "Viento Metal",
+                description: "El sonido se produce por la vibración de los labios del músico contra una boquilla en forma de copa, que a su vez hace vibrar la columna de aire dentro del instrumento.",
+                icon: "🎺",
+                instruments: [
+                    { name: "Trompeta", sound: "sounds/trumpet.mp3" },
+                    { name: "Trombón", sound: "sounds/trombone.mp3" },
+                    { name: "Tuba", sound: "sounds/tuba.mp3" },
+                    { name: "Trompa", sound: "sounds/frenchhorn.mp3" }
+                ]
+            },
+            {
+                name: "Percusión",
+                description: "Los instrumentos de percusión producen sonido al ser golpeados, agitados o raspados. Pueden tener altura definida (como el xilófono) o indefinida (como la batería).",
+                icon: "🥁",
+                instruments: [
+                    { name: "Timbales", sound: "sounds/timpani.mp3" },
+                    { name: "Xilófono", sound: "sounds/xylophone.mp3" },
+                    { name: "Caja china", sound: "sounds/woodblock.mp3" },
+                    { name: "Triángulo", sound: "sounds/triangle.mp3" }
+                ]
+            }
+        ];
+
+        // --- DOM Elements ---
+        const learnBtn = document.getElementById('learnBtn');
+        const quizBtn = document.getElementById('quizBtn');
+        const learnSection = document.getElementById('learnSection');
+        const quizSection = document.getElementById('quizSection');
+        const familyList = document.getElementById('familyList');
+        const instrumentDetailModal = document.getElementById('instrumentDetailModal');
+        const closeDetailModal = document.getElementById('closeDetailModal');
+        const detailFamilyName = document.getElementById('detailFamilyName');
+        const detailFamilyDescription = document.getElementById('detailFamilyDescription');
+        const detailInstrumentList = document.getElementById('detailInstrumentList');
+
+        const scoreDisplay = document.getElementById('score');
+        const currentQuestionDisplay = document.getElementById('currentQuestion');
+        const totalQuestionsDisplay = document = document.getElementById('totalQuestions');
+        const progressBar = document.getElementById('progressBar');
+        const playAudioBtn = document.getElementById('playAudioBtn');
+        const quizOptionsContainer = document.getElementById('quizOptions');
+        const checkAnswerBtn = document.getElementById('checkAnswerBtn');
+        const nextQuestionBtn = document.getElementById('nextQuestionBtn');
+        const feedbackMessage = document.getElementById('feedbackMessage');
+        const quizResultModal = document.getElementById('quizResultModal');
+        const resultTitle = document.getElementById('resultTitle');
+        const resultScore = document.getElementById('resultScore');
+        const restartQuizBtn = document.getElementById('restartQuizBtn');
+
+        // --- Game State ---
+        let currentView = 'learn';
+        let score = 0;
+        let questionNumber = 0;
+        const totalQuizQuestions = 10;
+        let currentQuizInstrument = null;
+        let selectedOption = null;
+        let quizInstruments = []; // Array to hold instruments for the quiz
+
+        // --- Global variable to hold the currently playing audio object and its source ---
+        let currentPlayingAudio = null;
+        let currentPlayingAudioSrc = null; // New variable to store the source URL
+
+        // --- Centralized function to stop and clean up current audio ---
+        function stopCurrentAudio() {
+            if (currentPlayingAudio) {
+                currentPlayingAudio.pause();
+                currentPlayingAudio.currentTime = 0; // Rewind to start
+                // Important: Remove event listeners from the old audio object
+                // to prevent it from interfering or causing unexpected behavior.
+                currentPlayingAudio.oncanplaythrough = null;
+                currentPlayingAudio.onerror = null;
+                currentPlayingAudio.onended = null;
+                currentPlayingAudio = null; // Clear the reference
+                currentPlayingAudioSrc = null; // Clear the source reference
+                console.log("Audio detenido y limpiado.");
+            }
+        }
+
+        // --- Audio Playback Function (Now plays actual files) ---
+        function playSound(instrumentName, soundFileName, isQuizContext = false, isReplayForFeedback = false) { // Added isReplayForFeedback
+            // Use soundFileName directly as it's expected to be a full URL now
+            const audioPath = soundFileName;
+            console.log(`Intentando reproducir sonido de: ${instrumentName} desde ${audioPath}`);
+
+            // Step 1: If the same audio is already playing, stop it and exit.
+            if (currentPlayingAudio && currentPlayingAudioSrc === audioPath) {
+                stopCurrentAudio();
+                if (!isReplayForFeedback && isQuizContext) { // Only clear if not a replay for feedback AND in quiz context
+                    feedbackMessage.textContent = ''; // Clear feedback when stopped manually
+                }
+                return;
+            }
+
+            // Step 2: Stop and clean up any *other* currently playing audio
+            stopCurrentAudio(); // This will clear currentPlayingAudio and currentPlayingAudioSrc
+
+            // Step 3: Create a new audio object
+            const audio = new Audio(audioPath);
+            currentPlayingAudio = audio; // Store reference to the new audio object
+            currentPlayingAudioSrc = audioPath; // Store its source URL
+
+            // Step 4: Set up event listeners for the new audio object
+            audio.oncanplaythrough = () => {
+                audio.play().catch(error => {
+                    console.error(`Error al reproducir el sonido de ${instrumentName} (posible política de autoplay del navegador):`, error);
+                    feedbackMessage.textContent = `🚫 Error al reproducir el sonido. Haz clic para iniciar la reproducción.`;
+                    feedbackMessage.classList.remove('text-green-600', 'text-red-600');
+                    feedbackMessage.classList.add('text-red-600');
+                });
+
+                // Only show "Reproduciendo..." message if it's the initial quiz play
+                // or in the learn section. Do NOT override feedback from checkAnswer.
+                if (isQuizContext && !isReplayForFeedback) { // Only for initial quiz play and not a replay
+                    feedbackMessage.textContent = '🔊 Reproduciendo...';
+                    feedbackMessage.classList.remove('text-green-600', 'text-red-600');
+                    feedbackMessage.classList.add('text-blue-600');
+                } else if (!isQuizContext && !isReplayForFeedback) { // For learn section, always show name, but not if it's a replay for feedback
+                    feedbackMessage.textContent = `🔊 Reproduciendo: ${instrumentName}`;
+                    feedbackMessage.classList.remove('text-green-600', 'text-red-600');
+                    feedbackMessage.classList.add('text-blue-600');
+                }
+                // If isReplayForFeedback is true, feedbackMessage is already set by checkAnswer, so do nothing here.
+            };
+
+            audio.onerror = (e) => {
+                console.error(`Error al cargar el archivo de audio '${soundFileName}' para ${instrumentName}:`, e);
+                // Corrected error message to reflect the full audioPath
+                feedbackMessage.textContent = `❌ No se pudo cargar el sonido. Verifica el nombre del archivo y la ruta: '${audioPath}'`;
+                feedbackMessage.classList.remove('text-green-600', 'text-blue-600');
+                feedbackMessage.classList.add('text-red-600');
+                stopCurrentAudio(); // Ensure cleanup on error
+            };
+
+            audio.onended = () => {
+                // Only clear feedback if it was set by playSound itself (temporary messages)
+                // and it's not a replay for feedback (which should keep its message)
+                if (feedbackMessage.textContent.startsWith('🔊 Reproduciendo') && !isReplayForFeedback) {
+                    feedbackMessage.textContent = '';
+                }
+                stopCurrentAudio(); // Ensure cleanup on end
+            };
+        }
+
+        // --- View Management ---
+        function showView(view) {
+            learnSection.classList.add('hidden');
+            quizSection.classList.add('hidden');
+            if (view === 'learn') {
+                learnSection.classList.remove('hidden');
+                renderFamilyCards();
+            } else if (view === 'quiz') {
+                quizSection.classList.remove('hidden');
+                startQuiz();
+            }
+            currentView = view;
+        }
+
+        // --- Learning Section Functions ---
+        function renderFamilyCards() {
+            familyList.innerHTML = ''; // Clear previous cards
+            instrumentFamilies.forEach(family => {
+                const card = document.createElement('div');
+                card.className = 'family-card bg-blue-50 p-6 rounded-xl shadow-md flex flex-col items-center text-center';
+                card.innerHTML = `
+                    <div class="text-6xl mb-4">${family.icon}</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">${family.name}</h3>
+                    <p class="text-gray-600 text-sm">${family.description.substring(0, 100)}...</p>
+                    <button class="mt-4 button-secondary text-sm">Ver más</button>
+                `;
+                card.addEventListener('click', (event) => { // Added event parameter
+                    // Stop any playing audio when a family card is clicked
+                    stopCurrentAudio();
+                    showInstrumentDetail(family);
+                });
+                familyList.appendChild(card);
+            });
+        }
+
+        function showInstrumentDetail(family) {
+            detailFamilyName.textContent = family.name;
+            detailFamilyDescription.textContent = family.description;
+            detailInstrumentList.innerHTML = '';
+            family.instruments.forEach(instrument => {
+                const instrumentItem = document.createElement('div');
+                instrumentItem.className = 'bg-gray-100 p-3 rounded-lg flex flex-col items-center shadow-sm';
+                instrumentItem.innerHTML = `
+                    <span class="text-3xl mb-2">🎵</span>
+                    <p class="text-lg font-semibold text-gray-800">${instrument.name}</p>
+                    <button class="mt-2 button-secondary text-xs play-instrument-sound" data-instrument-name="${instrument.name}" data-sound-file="${instrument.sound}">Escuchar</button>
+                `;
+                detailInstrumentList.appendChild(instrumentItem);
+            });
+
+            // Add event listeners for play buttons in the modal
+            document.querySelectorAll('.play-instrument-sound').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    event.stopPropagation(); // Prevent modal from closing if clicked on button
+                    const instrumentName = event.target.dataset.instrumentName;
+                    const soundFile = event.target.dataset.soundFile;
+                    playSound(instrumentName, soundFile, false); // Not in quiz context, not replay for feedback
+                });
+            });
+
+            instrumentDetailModal.classList.remove('hidden');
+        }
+
+        // Event listener for closing the modal via the "Cerrar" button
+        closeDetailModal.addEventListener('click', () => {
+            instrumentDetailModal.classList.add('hidden');
+            feedbackMessage.textContent = ''; // Clear feedback when closing modal
+            stopCurrentAudio(); // Centralized audio stop
+        });
+
+        // Event listener for closing the modal by clicking outside its content
+        instrumentDetailModal.addEventListener('click', (event) => {
+            if (event.target === instrumentDetailModal) { // Check if the click was directly on the modal background
+                instrumentDetailModal.classList.add('hidden');
+                feedbackMessage.textContent = '';
+                stopCurrentAudio(); // Centralized audio stop
+            }
+        });
+
+        // --- Quiz Section Functions ---
+        function initializeQuizInstruments() {
+            quizInstruments = [];
+            instrumentFamilies.forEach(family => {
+                family.instruments.forEach(instrument => {
+                    quizInstruments.push({
+                        name: instrument.name,
+                        family: family.name,
+                        sound: instrument.sound // Placeholder sound file name
+                    });
+                });
+            });
+            // Shuffle the instruments for random questions
+            quizInstruments = quizInstruments.sort(() => 0.5 - Math.random());
+        }
+
+        function startQuiz() {
+            score = 0;
+            questionNumber = 0;
+            scoreDisplay.textContent = score;
+            totalQuestionsDisplay.textContent = totalQuizQuestions;
+            initializeQuizInstruments(); // Prepare instruments for the quiz
+            nextQuestion();
+            quizResultModal.classList.add('hidden'); // Ensure result modal is hidden
+        }
+
+        function nextQuestion() {
+            questionNumber++;
+            if (questionNumber > totalQuizQuestions) {
+                endQuiz();
+                return;
+            }
+
+            // Stop any playing audio immediately when moving to the next question
+            stopCurrentAudio(); // Centralized audio stop
+
+            currentQuestionDisplay.textContent = questionNumber;
+            updateProgressBar();
+            feedbackMessage.textContent = ''; // Clear feedback for new question
+            selectedOption = null;
+
+            // Ensure checkAnswerBtn is visible and enabled for the new question
+            checkAnswerBtn.classList.remove('hidden'); // Make sure it's visible
+            checkAnswerBtn.disabled = true; // Start disabled until an option is selected
+            checkAnswerBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            nextQuestionBtn.classList.add('hidden');
+
+            // Select a random instrument for the current question
+            currentQuizInstrument = quizInstruments[questionNumber - 1];
+
+            let options = new Set();
+            let correctAnswerValue; // This will hold either family name or instrument name
+
+            // Stage 1: Questions 1-3 (Identify Family)
+            if (questionNumber <= 3) {
+                correctAnswerValue = currentQuizInstrument.family;
+                options.add(correctAnswerValue);
+                while (options.size < 4) {
+                    const randomFamily = instrumentFamilies[Math.floor(Math.random() * instrumentFamilies.length)].name;
+                    options.add(randomFamily);
+                }
+                renderQuizOptions(Array.from(options).sort(() => 0.5 - Math.random()), 'family');
+            }
+            // Stage 2: Questions 4-7 (Identify Instrument - Mixed Families)
+            else if (questionNumber > 3 && questionNumber <= 7) {
+                correctAnswerValue = currentQuizInstrument.name;
+                options.add(correctAnswerValue);
+                // Get all instrument names
+                const allInstrumentNames = quizInstruments.map(inst => inst.name);
+                while (options.size < 4) {
+                    const randomInstrumentName = allInstrumentNames[Math.floor(Math.random() * allInstrumentNames.length)];
+                    if (randomInstrumentName !== correctAnswerValue) {
+                        options.add(randomInstrumentName);
+                    }
+                }
+                renderQuizOptions(Array.from(options).sort(() => 0.5 - Math.random()), 'instrument');
+            }
+            // Stage 3: Questions 8-10 (Identify Instrument - Same Family)
+            else { // questionNumber > 7
+                correctAnswerValue = currentQuizInstrument.name;
+                options.add(correctAnswerValue);
+                // Get instruments from the same family as the current instrument
+                const sameFamilyInstruments = instrumentFamilies.find(f => f.name === currentQuizInstrument.family).instruments;
+                const otherSameFamilyInstruments = sameFamilyInstruments.filter(inst => inst.name !== correctAnswerValue);
+
+                // Add other instruments from the same family
+                let count = 0;
+                while (options.size < 4 && count < otherSameFamilyInstruments.length) {
+                    options.add(otherSameFamilyInstruments[count].name);
+                    count++;
+                }
+
+                // If not enough same-family instruments, fill with random instruments from other families
+                const allInstrumentNames = quizInstruments.map(inst => inst.name);
+                while (options.size < 4) {
+                    const randomInstrumentName = allInstrumentNames[Math.floor(Math.random() * allInstrumentNames.length)];
+                    if (!options.has(randomInstrumentName)) { // Ensure uniqueness
+                        options.add(randomInstrumentName);
+                    }
+                }
+                renderQuizOptions(Array.from(options).sort(() => 0.5 - Math.random()), 'instrument');
+            }
+
+            playAudioBtn.disabled = false; // Enable play button for new question
+        }
+
+        function renderQuizOptions(options, type) {
+            quizOptionsContainer.innerHTML = '';
+            options.forEach(option => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'quiz-option p-4 rounded-xl shadow-sm text-center text-xl font-semibold text-gray-800 cursor-pointer';
+                optionDiv.textContent = option;
+                optionDiv.dataset.value = option; // Store the option value
+                optionDiv.dataset.type = type; // Store the type of option (family or instrument)
+                optionDiv.addEventListener('click', () => selectOption(optionDiv));
+                // Ensure options are clickable for a new question
+                optionDiv.style.pointerEvents = 'auto';
+                quizOptionsContainer.appendChild(optionDiv);
+            });
+        }
+
+        function selectOption(element) {
+            // Remove 'selected' class from all options
+            document.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+            });
+            // Add 'selected' class to the clicked option
+            element.classList.add('selected');
+            selectedOption = element.dataset.value;
+            checkAnswerBtn.disabled = false;
+            checkAnswerBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+
+        function checkAnswer() {
+            if (!selectedOption) return;
+
+            playAudioBtn.disabled = true; // Disable play button after checking
+
+            let correctAnswer;
+            let feedbackText;
+            // Determine the correct answer based on the current question stage
+            if (questionNumber <= 3) {
+                correctAnswer = currentQuizInstrument.family; // Correct answer is the family name
+                if (selectedOption === correctAnswer) {
+                    feedbackText = `¡Correcto! 🎉 La familia era: ${correctAnswer}`;
+                } else {
+                    feedbackText = `¡Incorrecto! 😔 La familia correcta era: ${correctAnswer}`;
+                }
+            } else { // For instrument identification stages
+                correctAnswer = currentQuizInstrument.name; // Correct answer is the instrument name
+                if (selectedOption === correctAnswer) {
+                    feedbackText = `¡Correcto! 🎉 La respuesta era: ${correctAnswer}`;
+                } else {
+                    feedbackText = `¡Incorrecto! 😔 La respuesta correcta era: ${correctAnswer}`;
+                }
+            }
+
+            const allOptions = document.querySelectorAll('.quiz-option');
+
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected'); // Remove selected highlight
+                if (opt.dataset.value === correctAnswer) {
+                    opt.classList.add('correct'); // Highlight correct answer in green
+                } else {
+                    opt.classList.add('incorrect'); // Highlight incorrect answers in red
+                }
+                opt.style.pointerEvents = 'none'; // Disable clicking after answer
+            });
+
+            feedbackMessage.textContent = feedbackText;
+            feedbackMessage.classList.remove('text-green-600', 'text-blue-600', 'text-red-600'); // Clear previous colors
+            feedbackMessage.classList.add(selectedOption === correctAnswer ? 'text-green-600' : 'text-red-600');
+
+            if (selectedOption === correctAnswer) {
+                score += 10;
+            }
+            scoreDisplay.textContent = score;
+            checkAnswerBtn.classList.add('hidden');
+            nextQuestionBtn.classList.remove('hidden');
+
+            // Replay the audio after feedback is given
+            // Pass isReplayForFeedback as true so playSound knows not to overwrite the feedback message
+            playSound(currentQuizInstrument.name, currentQuizInstrument.sound, false, true);
+        }
+
+        function updateProgressBar() {
+            const progress = (questionNumber / totalQuizQuestions) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        function endQuiz() {
+            resultTitle.textContent = '¡Juego Terminado!';
+            resultScore.textContent = `Tu puntuación final es: ${score} puntos.`;
+            if (score === totalQuizQuestions * 10) {
+                resultTitle.textContent = '¡Felicidades, eres un experto! 🏆';
+            } else if (score >= totalQuizQuestions * 5) {
+                resultTitle.textContent = '¡Buen trabajo! Sigue practicando. 👍';
+            } else {
+                resultTitle.textContent = '¡Sigue intentándolo! 💪';
+            }
+            quizResultModal.classList.remove('hidden');
+            stopCurrentAudio(); // Ensure audio stops when quiz ends
+        }
+
+        // --- Event Listeners ---
+        learnBtn.addEventListener('click', () => showView('learn'));
+        quizBtn.addEventListener('click', () => showView('quiz'));
+
+        playAudioBtn.addEventListener('click', () => {
+            if (currentQuizInstrument) {
+                // Now passes both name and sound file, and true for quiz context
+                playSound(currentQuizInstrument.name, currentQuizInstrument.sound, true);
+            }
+        });
+
+        checkAnswerBtn.addEventListener('click', checkAnswer);
+        nextQuestionBtn.addEventListener('click', nextQuestion);
+        restartQuizBtn.addEventListener('click', () => {
+            stopCurrentAudio(); // Stop audio if restarting quiz from modal
+            startQuiz();
+        });
+
+        // Initial view load
+        document.addEventListener('DOMContentLoaded', () => {
+            authenticateUser(); // Authenticate user on load
+            showView('learn');
+        });
+    </script>
+</body>
+</html>
