@@ -4,18 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎵 Explorador de Instrumentos Musicales 🎵</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Inter font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8; /* Light blue-gray background */
+            background-color: #f0f4f8;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
             padding: 20px;
             box-sizing: border-box;
         }
@@ -23,7 +21,6 @@
             background-color: #ffffff;
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
             max-width: 900px;
             width: 100%;
             padding: 30px;
@@ -31,14 +28,9 @@
             flex-direction: column;
             gap: 20px;
         }
-        .header {
-            text-align: center;
-            color: #334155; /* Darker blue-gray */
-        }
         .family-card {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
             cursor: pointer;
-            /* Ensure all cards have the same height */
             height: 100%;
         }
         .family-card:hover {
@@ -46,55 +38,41 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
         .button-primary {
-            background-color: #6366f1; /* Indigo */
+            background-color: #6366f1;
             color: white;
             padding: 12px 25px;
             border-radius: 12px;
             font-weight: 600;
-            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+            transition: all 0.2s ease;
             box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
         }
         .button-primary:hover {
-            background-color: #4f46e5; /* Darker indigo */
+            background-color: #4f46e5;
             transform: translateY(-2px);
         }
-        .button-primary:active {
-            transform: translateY(0);
-            box-shadow: none;
-        }
         .button-secondary {
-            background-color: #e2e8f0; /* Light gray */
-            color: #475569; /* Slate gray */
+            background-color: #e2e8f0;
+            color: #475569;
             padding: 10px 20px;
             border-radius: 10px;
             font-weight: 500;
-            transition: background-color 0.2s ease-in-out;
+            transition: background-color 0.2s ease;
         }
-        .button-secondary:hover {
-            background-color: #cbd5e1; /* Medium gray */
-        }
+        .button-secondary:hover { background-color: #cbd5e1; }
         .quiz-option {
-            background-color: #f8fafc; /* Lighter gray */
+            background-color: #f8fafc;
             border: 2px solid #e2e8f0;
-            transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+            transition: all 0.2s ease;
+            cursor: pointer;
         }
         .quiz-option:hover {
-            background-color: #eff6ff; /* Lightest blue */
-            border-color: #93c5fd; /* Light blue */
+            background-color: #eff6ff;
+            border-color: #93c5fd;
             transform: translateY(-2px);
         }
-        .quiz-option.selected {
-            background-color: #bfdbfe; /* Accent blue */
-            border-color: #3b82f6; /* Strong blue */
-        }
-        .quiz-option.correct {
-            background-color: #dcfce7; /* Light green */
-            border-color: #22c55e; /* Strong green */
-        }
-        .quiz-option.incorrect {
-            background-color: #fee2e2; /* Light red */
-            border-color: #ef4444; /* Strong red */
-        }
+        .quiz-option.selected { background-color: #bfdbfe; border-color: #3b82f6; }
+        .quiz-option.correct { background-color: #dcfce7; border-color: #22c55e; }
+        .quiz-option.incorrect { background-color: #fee2e2; border-color: #ef4444; }
         .modal {
             background-color: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(5px);
@@ -102,108 +80,77 @@
             justify-content: center;
             align-items: center;
         }
-        .modal-content {
-            background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-        .progress-bar-container {
-            background-color: #e2e8f0;
-            border-radius: 9999px; /* Full rounded corners */
-            height: 12px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            background-color: #3b82f6; /* Blue */
-            height: 100%;
-            border-radius: 9999px;
-            transition: width 0.5s ease-out;
-        }
         .instrument-image {
             width: 100%;
-            height: 80px; /* Fixed height for consistency */
-            object-fit: contain; /* Ensures the entire image is visible */
+            height: 80px;
+            object-fit: contain;
             border-radius: 8px;
-            margin-bottom: 8px;
-            background-color: #e2e8f0; /* Light background for images with transparency */
+            background-color: #f1f5f9;
             padding: 4px;
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-blue-100 to-purple-100 min-h-screen flex items-center justify-center p-4">
+<body class="bg-gradient-to-br from-blue-100 to-purple-100">
 
     <div id="app" class="container">
-        <!-- Header -->
-        <div class="header">
+        <!-- Encabezado -->
+        <div class="text-center">
             <h1 class="text-4xl font-extrabold text-gray-800 mb-2">🎵 Explorador Musical 🎵</h1>
             <p class="text-lg text-gray-600">¡Aprende y juega con los instrumentos!</p>
         </div>
 
-        <!-- Main Navigation/View Selector -->
+        <!-- Navegación Principal -->
         <div class="flex justify-center gap-4 mb-6">
             <button id="learnBtn" class="button-primary">Aprender</button>
             <button id="quizBtn" class="button-primary">Jugar</button>
         </div>
 
-        <!-- Learning Section -->
-        <div id="learnSection" class="hidden">
+        <!-- Sección de Aprendizaje -->
+        <div id="learnSection">
             <h2 class="text-3xl font-bold text-gray-700 mb-6 text-center">Familias de Instrumentos</h2>
-            <!-- Grid layout adjusted: single column on mobile, 2 columns on medium screens and up for symmetry -->
-            <div id="familyList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Family cards will be injected here by JS -->
-            </div>
-            <!-- MODAL CORRECTION: Added p-4 for safe margin and max-h-[90vh] overflow-y-auto for scrollability -->
+            <div id="familyList" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+            
+            <!-- Modal de Detalle (Corrección de Scroll Aplicada) -->
             <div id="instrumentDetailModal" class="fixed inset-0 hidden z-50 modal p-4">
-                <div class="modal-content p-8 max-w-lg w-full text-center max-h-[90vh] overflow-y-auto">
+                <div class="bg-white p-8 max-w-lg w-full text-center rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto">
                     <h3 id="detailFamilyName" class="text-3xl font-bold text-gray-800 mb-4"></h3>
                     <p id="detailFamilyDescription" class="text-gray-700 mb-6"></p>
-                    <h4 class="text-2xl font-semibold text-gray-700 mb-4">Ejemplos de Instrumentos:</h4>
-                    <div id="detailInstrumentList" class="grid grid-cols-2 gap-4 mb-6">
-                        <!-- Instruments will be injected here -->
-                    </div>
+                    <h4 class="text-2xl font-semibold text-gray-700 mb-4">Ejemplos:</h4>
+                    <div id="detailInstrumentList" class="grid grid-cols-2 gap-4 mb-6"></div>
                     <button id="closeDetailModal" class="button-primary">Cerrar</button>
                 </div>
             </div>
         </div>
 
-        <!-- Quiz Section -->
+        <!-- Sección de Juego -->
         <div id="quizSection" class="hidden">
             <h2 class="text-3xl font-bold text-gray-700 mb-6 text-center">¡Adivina el Sonido!</h2>
-
             <div class="flex justify-between items-center mb-6">
-                <div class="text-xl font-semibold text-gray-700">Puntuación: <span id="score">0</span></div>
-                <div class="text-xl font-semibold text-gray-700">Pregunta <span id="currentQuestion">1</span> / <span id="totalQuestions">10</span></div>
+                <div class="text-xl font-semibold">Puntuación: <span id="score">0</span></div>
+                <div class="text-xl font-semibold">Pregunta <span id="currentQuestion">1</span> / 10</div>
             </div>
-
-            <div class="progress-bar-container mb-6">
-                <div id="progressBar" class="progress-bar" style="width: 0%;"></div>
+            <div class="bg-gray-200 rounded-full h-3 mb-6 overflow-hidden">
+                <div id="progressBar" class="bg-blue-600 h-full transition-all duration-500" style="width: 0%;"></div>
             </div>
-
             <div class="bg-blue-50 p-6 rounded-xl shadow-inner mb-8 text-center">
-                <p class="text-2xl font-semibold text-blue-800 mb-4">Escucha el sonido:</p>
-                <button id="playAudioBtn" class="button-primary flex items-center justify-center mx-auto text-2xl">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 108 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                <button id="playAudioBtn" class="button-primary flex items-center justify-center mx-auto text-xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     Reproducir Sonido
                 </button>
             </div>
-
-            <div id="quizOptions" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                <!-- Quiz options will be injected here by JS -->
-            </div>
-
+            <div id="quizOptions" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8"></div>
             <div class="flex justify-center gap-4">
-                <button id="checkAnswerBtn" class="button-primary opacity-50 cursor-not-allowed" disabled>Comprobar Respuesta</button>
-                <button id="nextQuestionBtn" class="button-secondary hidden">Siguiente Pregunta</button>
+                <button id="checkAnswerBtn" class="button-primary opacity-50 cursor-not-allowed" disabled>Comprobar</button>
+                <button id="nextQuestionBtn" class="button-secondary hidden">Siguiente</button>
             </div>
+            <div id="feedbackMessage" class="mt-6 text-center text-2xl font-bold h-8"></div>
 
-            <div id="feedbackMessage" class="mt-6 text-center text-2xl font-bold">
-                <!-- Feedback message will appear here -->
-            </div>
-
-            <div id="quizResultModal" class="fixed inset-0 hidden z-50 modal">
-                <div class="modal-content p-8 max-w-md w-full text-center">
+            <!-- Modal de Resultados -->
+            <div id="quizResultModal" class="fixed inset-0 hidden z-50 modal p-4">
+                <div class="bg-white p-8 max-w-md w-full text-center rounded-xl">
                     <h3 id="resultTitle" class="text-3xl font-bold text-gray-800 mb-4"></h3>
                     <p id="resultScore" class="text-2xl text-gray-700 mb-6"></p>
                     <button id="restartQuizBtn" class="button-primary">Volver a Jugar</button>
@@ -213,594 +160,217 @@
     </div>
 
     <script>
-        // Global variables for Firebase (provided by the Canvas environment)
-        // These are placeholders for the actual variables that will be injected by the environment.
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-        // Mock Firebase setup (as before)
-        const mockFirebase = {
-            initializeApp: (config) => { console.log("Firebase initialized (mock)", config); return {}; },
-            getAuth: (app) => { console.log("Auth service obtained (mock)"); return {}; },
-            signInWithCustomToken: async (auth, token) => { console.log("Signed in with custom token (mock)", token); },
-            signInAnonymously: async (auth) => { console.log("Signed in anonymously (mock)"); },
-            onAuthStateChanged: (auth, callback) => {
-                console.log("Auth state listener set up (mock)");
-                setTimeout(() => {
-                    callback({ uid: 'mock-user-id', displayName: 'Mock User' });
-                }, 100);
-            },
-            getFirestore: (app) => { console.log("Firestore service obtained (mock)"); return {}; },
-            collection: (db, path) => { console.log("Collection ref (mock)", path); return {}; },
-            doc: (db, path, id) => { console.log("Doc ref (mock)", path, id); return {}; },
-            setDoc: async (docRef, data) => { console.log("Doc set (mock)", docRef, data); },
-            getDoc: async (docRef) => { console.log("Doc get (mock)", docRef); return { exists: () => false, data: () => null }; },
-            onSnapshot: (queryRef, callback) => {
-                console.log("Snapshot listener set up (mock)");
-                setTimeout(() => {
-                    callback({
-                        docs: [
-                            { id: 'mock-doc-1', data: () => ({ score: 0, level: 1 }) }
-                        ]
-                    });
-                }, 200);
-                return () => console.log("Snapshot listener unsubscribed (mock)");
-            }
-        };
-
-        const firebaseApp = firebaseConfig ? firebaseConfig : mockFirebase.initializeApp({});
-        const db = firebaseConfig ? mockFirebase.getFirestore(firebaseApp) : mockFirebase.getFirestore({});
-        const auth = firebaseConfig ? mockFirebase.getAuth(firebaseApp) : mockFirebase.getAuth({});
-
-        let currentUserId = null;
-        let isAuthReady = false;
-
-        async function authenticateUser() {
-            try {
-                if (initialAuthToken) {
-                    await mockFirebase.signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await mockFirebase.signInAnonymously(auth);
-                }
-            } catch (error) {
-                console.error("Firebase authentication error:", error);
-                await mockFirebase.signInAnonymously(auth);
-            }
-        }
-
-        mockFirebase.onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUserId = user.uid;
-                console.log("User authenticated:", currentUserId);
-            } else {
-                currentUserId = crypto.randomUUID();
-                console.log("User not authenticated, using random ID:", currentUserId);
-            }
-            isAuthReady = true;
-        });
-
-        // --- Instrument Data: USING RELATIVE LOCAL PATHS ---
+        // Datos de la aplicación
         const instrumentFamilies = [
             {
                 name: "Cuerda",
-                description: "Los instrumentos de cuerda producen sonido mediante la vibración de sus cuerdas. Estas vibraciones pueden ser causadas al frotarlas con un arco, pulsarlas con los dedos o un plectro, o golpearlas.",
                 icon: "🎻",
+                description: "Producen sonido por la vibración de cuerdas al ser frotadas, pulsadas o golpeadas.",
                 instruments: [
-                    { 
-                        name: "Violín", 
-                        sound: "sounds/violin.mp3", 
-                        imageUrl: "images/violin.jpg"
-                    },
-                    { 
-                        name: "Guitarra", 
-                        sound: "sounds/guitar.mp3",
-                        imageUrl: "images/guitarra.jpg"
-                    },
-                    { 
-                        name: "Arpa", 
-                        sound: "sounds/harp.mp3",
-                        imageUrl: "images/arpa.jpg"
-                    },
-                    { 
-                        name: "Piano", 
-                        sound: "sounds/piano.mp3",
-                        imageUrl: "images/piano.jpg"
-                    }
+                    { name: "Violín", sound: "sounds/violin.mp3", imageUrl: "images/violin.jpg" },
+                    { name: "Guitarra", sound: "sounds/guitar.mp3", imageUrl: "images/guitarra.jpg" },
+                    { name: "Arpa", sound: "sounds/harp.mp3", imageUrl: "images/arpa.jpg" },
+                    { name: "Piano", sound: "sounds/piano.mp3", imageUrl: "images/piano.jpg" }
                 ]
             },
             {
                 name: "Viento Madera",
-                description: "Estos instrumentos producen sonido cuando el aire pasa a través de una lengüeta (simple o doble) o a través de un agujero, haciendo vibrar una columna de aire dentro del instrumento.",
                 icon: "🎷",
+                description: "El sonido se genera al vibrar una columna de aire mediante una lengüeta o un bisel.",
                 instruments: [
-                    { 
-                        name: "Flauta", 
-                        sound: "sounds/flute.mp3",
-                        imageUrl: "images/flauta.jpg"
-                    },
-                    { 
-                        name: "Clarinete", 
-                        sound: "sounds/clarinet.mp3",
-                        imageUrl: "images/clarinete.jpg"
-                    },
-                    { 
-                        name: "Fagot", 
-                        sound: "sounds/bassoon.mp3",
-                        imageUrl: "images/fagot.jpg"
-                    },
-                    { 
-                        name: "Saxofón", 
-                        sound: "sounds/saxophone.mp3",
-                        imageUrl: "images/saxofon.jpg"
-                    }
+                    { name: "Flauta", sound: "sounds/flute.mp3", imageUrl: "images/flauta.jpg" },
+                    { name: "Clarinete", sound: "sounds/clarinet.mp3", imageUrl: "images/clarinete.jpg" },
+                    { name: "Fagot", sound: "sounds/bassoon.mp3", imageUrl: "images/fagot.jpg" },
+                    { name: "Saxofón", sound: "sounds/saxophone.mp3", imageUrl: "images/saxofon.jpg" }
                 ]
             },
             {
                 name: "Viento Metal",
-                description: "El sonido se produce por la vibración de los labios del músico contra una boquilla en forma de copa, que a su vez hace vibrar la columna de aire dentro del instrumento.",
                 icon: "🎺",
+                description: "Vibración de labios contra una boquilla metálica que resuena en un tubo de metal.",
                 instruments: [
-                    { 
-                        name: "Trompeta", 
-                        sound: "sounds/trumpet.mp3",
-                        imageUrl: "images/trompeta.jpg"
-                    },
-                    { 
-                        name: "Trombón", 
-                        sound: "sounds/trombone.mp3",
-                        imageUrl: "images/trombon.jpg"
-                    },
-                    { 
-                        name: "Tuba", 
-                        sound: "sounds/tuba.mp3",
-                        imageUrl: "images/tuba.jpg"
-                    },
-                    { 
-                        name: "Trompa", 
-                        sound: "sounds/frenchhorn.mp3",
-                        imageUrl: "images/trompa.jpg"
-                    }
+                    { name: "Trompeta", sound: "sounds/trumpet.mp3", imageUrl: "images/trompeta.jpg" },
+                    { name: "Trombón", sound: "sounds/trombone.mp3", imageUrl: "images/trombon.jpg" },
+                    { name: "Tuba", sound: "sounds/tuba.mp3", imageUrl: "images/tuba.jpg" },
+                    { name: "Trompa", sound: "sounds/frenchhorn.mp3", imageUrl: "images/trompa.jpg" }
                 ]
             },
             {
                 name: "Percusión",
-                description: "Los instrumentos de percusión producen sonido al ser golpeados, agitados o raspados. Pueden tener altura definida (como el xilófono) o indefinida (como la batería).",
                 icon: "🥁",
+                description: "Instrumentos que suenan al ser golpeados, sacudidos o raspados.",
                 instruments: [
-                    { 
-                        name: "Timbales", 
-                        sound: "sounds/timpani.mp3",
-                        imageUrl: "images/timbales.jpg"
-                    },
-                    { 
-                        name: "Xilófono", 
-                        sound: "sounds/xylophone.mp3",
-                        imageUrl: "images/xilofono.jpg"
-                    },
-                    { 
-                        name: "Caja china", 
-                        sound: "sounds/woodblock.mp3",
-                        imageUrl: "images/cajachina.jpg"
-                    },
-                    { 
-                        name: "Triángulo", 
-                        sound: "sounds/triangle.mp3",
-                        imageUrl: "images/triangulo.jpg"
-                    }
+                    { name: "Timbales", sound: "sounds/timpani.mp3", imageUrl: "images/timbales.jpg" },
+                    { name: "Xilófono", sound: "sounds/xylophone.mp3", imageUrl: "images/xilofono.jpg" },
+                    { name: "Caja china", sound: "sounds/woodblock.mp3", imageUrl: "images/cajachina.jpg" },
+                    { name: "Triángulo", sound: "sounds/triangle.mp3", imageUrl: "images/triangulo.jpg" }
                 ]
             }
         ];
 
-        // --- DOM Elements (unchanged) ---
-        const learnBtn = document.getElementById('learnBtn');
-        const quizBtn = document.getElementById('quizBtn');
-        const learnSection = document.getElementById('learnSection');
-        const quizSection = document.getElementById('quizSection');
-        const familyList = document.getElementById('familyList'); // Grid container for families
-        const instrumentDetailModal = document.getElementById('instrumentDetailModal');
-        const closeDetailModal = document.getElementById('closeDetailModal');
-        const detailFamilyName = document.getElementById('detailFamilyName');
-        const detailFamilyDescription = document.getElementById('detailFamilyDescription');
-        const detailInstrumentList = document.getElementById('detailInstrumentList');
+        // Estado Global
+        let score = 0, questionNumber = 0, currentQuizInstrument = null, selectedOption = null;
+        let audioInstance = null, quizPool = [];
 
-        const scoreDisplay = document.getElementById('score');
-        const currentQuestionDisplay = document.getElementById('currentQuestion');
-        const totalQuestionsDisplay = document.getElementById('totalQuestions');
-        const progressBar = document.getElementById('progressBar');
-        const playAudioBtn = document.getElementById('playAudioBtn');
-        const quizOptionsContainer = document.getElementById('quizOptions');
-        const checkAnswerBtn = document.getElementById('checkAnswerBtn');
-        const nextQuestionBtn = document.getElementById('nextQuestionBtn');
-        const feedbackMessage = document.getElementById('feedbackMessage');
-        const quizResultModal = document.getElementById('quizResultModal');
-        const resultTitle = document.getElementById('resultTitle');
-        const resultScore = document.getElementById('resultScore');
-        const restartQuizBtn = document.getElementById('restartQuizBtn');
-
-        // --- Game State (unchanged) ---
-        let currentView = 'learn';
-        let score = 0;
-        let questionNumber = 0;
-        const totalQuizQuestions = 10;
-        let currentQuizInstrument = null;
-        let selectedOption = null;
-        let quizInstruments = [];
-        let currentPlayingAudio = null;
-        let currentPlayingAudioSrc = null;
-
-        // --- Centralized function to stop and clean up current audio (unchanged) ---
-        function stopCurrentAudio() {
-            if (currentPlayingAudio) {
-                currentPlayingAudio.pause();
-                currentPlayingAudio.currentTime = 0;
-                currentPlayingAudio.oncanplaythrough = null;
-                currentPlayingAudio.onerror = null;
-                currentPlayingAudio.onended = null;
-                currentPlayingAudio = null;
-                currentPlayingAudioSrc = null;
-                console.log("Audio detenido y limpiado.");
+        // Utilidades de Audio
+        function stopAudio() {
+            if (audioInstance) {
+                audioInstance.pause();
+                audioInstance.src = "";
+                audioInstance = null;
             }
         }
 
-        // --- Audio Playback Function (unchanged) ---
-        function playSound(instrumentName, soundFileName, isQuizContext = false, isReplayForFeedback = false) {
-            const audioPath = soundFileName;
-            console.log(`Intentando reproducir sonido de: ${instrumentName} desde ${audioPath}`);
-
-            if (currentPlayingAudio && currentPlayingAudioSrc === audioPath) {
-                stopCurrentAudio();
-                if (!isReplayForFeedback && isQuizContext) {
-                    feedbackMessage.textContent = '';
-                }
-                return;
+        function playSound(file, label = "") {
+            stopAudio();
+            audioInstance = new Audio(file);
+            if (label) {
+                feedbackMessage.textContent = "🔊 Reproduciendo...";
+                feedbackMessage.className = "mt-6 text-center text-2xl font-bold text-blue-600";
             }
-
-            stopCurrentAudio();
-
-            const audio = new Audio(audioPath);
-            currentPlayingAudio = audio;
-            currentPlayingAudioSrc = audioPath;
-
-            audio.oncanplaythrough = () => {
-                audio.play().catch(error => {
-                    console.error(`Error al reproducir el sonido de ${instrumentName} (posible política de autoplay del navegador):`, error);
-                    feedbackMessage.textContent = `🚫 Error al reproducir el sonido. Haz clic para iniciar la reproducción.`;
-                    feedbackMessage.classList.remove('text-green-600', 'text-red-600', 'text-blue-600');
-                    feedbackMessage.classList.add('text-red-600');
-                });
-
-                if (isQuizContext && !isReplayForFeedback) {
-                    feedbackMessage.textContent = '🔊 Reproduciendo...';
-                    feedbackMessage.classList.remove('text-green-600', 'text-red-600');
-                    feedbackMessage.classList.add('text-blue-600');
-                } else if (!isQuizContext && !isReplayForFeedback) {
-                    feedbackMessage.textContent = `🔊 Reproduciendo: ${instrumentName}`;
-                    feedbackMessage.classList.remove('text-green-600', 'text-red-600');
-                    feedbackMessage.classList.add('text-blue-600');
-                }
-            };
-
-            audio.onerror = (e) => {
-                console.error(`Error al cargar el archivo de audio '${soundFileName}' para ${instrumentName}:`, e);
-                feedbackMessage.textContent = `❌ No se pudo cargar el sonido. Verifica el nombre del archivo y la ruta: '${audioPath}'`;
-                feedbackMessage.classList.remove('text-green-600', 'text-blue-600');
-                feedbackMessage.classList.add('text-red-600');
-                stopCurrentAudio();
-            };
-
-            audio.onended = () => {
-                if (feedbackMessage.textContent.startsWith('🔊 Reproduciendo') && !isReplayForFeedback) {
-                    feedbackMessage.textContent = '';
-                }
-                stopCurrentAudio();
-            };
+            audioInstance.play().catch(e => console.warn("Autoplay bloqueado"));
+            audioInstance.onended = () => { if(label) feedbackMessage.textContent = ""; };
         }
 
-        // --- View Management (unchanged) ---
+        // Vistas
         function showView(view) {
-            learnSection.classList.add('hidden');
-            quizSection.classList.add('hidden');
-            if (view === 'learn') {
-                learnSection.classList.remove('hidden');
-                renderFamilyCards();
-            } else if (view === 'quiz') {
-                quizSection.classList.remove('hidden');
-                startQuiz();
-            }
-            currentView = view;
+            stopAudio();
+            document.getElementById('learnSection').classList.toggle('hidden', view !== 'learn');
+            document.getElementById('quizSection').classList.toggle('hidden', view !== 'quiz');
+            if(view === 'learn') renderFamilies(); else startQuiz();
         }
 
-        // --- Learning Section Functions (Modified renderFamilyCards) ---
-        function renderFamilyCards() {
-            familyList.innerHTML = '';
-            instrumentFamilies.forEach(family => {
-                const card = document.createElement('div');
-                // Added flex-grow and h-full for better symmetry inside the grid
-                card.className = 'family-card bg-blue-50 p-6 rounded-xl shadow-md flex flex-col items-center text-center flex-grow h-full'; 
-                card.innerHTML = `
-                    <div class="text-6xl mb-4">${family.icon}</div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-2">${family.name}</h3>
-                    <p class="text-gray-600 text-sm flex-grow">${family.description.substring(0, 100)}...</p>
-                    <button class="mt-4 button-secondary text-sm">Ver más</button>
-                `;
-                card.addEventListener('click', (event) => {
-                    stopCurrentAudio();
-                    showInstrumentDetail(family);
-                });
-                familyList.appendChild(card);
+        // Lógica de Aprendizaje
+        function renderFamilies() {
+            const list = document.getElementById('familyList');
+            list.innerHTML = "";
+            instrumentFamilies.forEach(f => {
+                const div = document.createElement('div');
+                div.className = "family-card bg-blue-50 p-6 rounded-xl shadow-md flex flex-col items-center text-center";
+                div.innerHTML = `<div class="text-6xl mb-4">${f.icon}</div><h3 class="text-2xl font-bold">${f.name}</h3><p class="text-gray-600 text-sm mt-2">${f.description}</p><button class="mt-4 button-secondary">Ver más</button>`;
+                div.onclick = () => showModal(f);
+                list.appendChild(div);
             });
         }
 
-        // --- showInstrumentDetail (unchanged logic) ---
-        function showInstrumentDetail(family) {
-            detailFamilyName.textContent = family.name;
-            detailFamilyDescription.textContent = family.description;
-            detailInstrumentList.innerHTML = '';
-            
-            // Define a generic placeholder URL for the fallback (IMAGEN NO DISPONIBLE)
-            const genericPlaceholderUrl = "https://placehold.co/150x80/d1d5db/4b5563?text=IMAGEN+NO+DISPONIBLE";
-
-            family.instruments.forEach(instrument => {
-                const imageUrl = instrument.imageUrl; // Now a relative path like 'images/violin.jpg'
-                
-                const instrumentItem = document.createElement('div');
-                instrumentItem.className = 'bg-gray-100 p-3 rounded-lg flex flex-col items-center shadow-sm';
-                
-                // Image tag uses the relative path, and falls back to the generic placeholder on error.
-                instrumentItem.innerHTML = `
-                    <!-- Image of the instrument. Please ensure the file exists in the relative path! -->
-                    <img class="instrument-image mb-2" 
-                         src="${imageUrl}" 
-                         alt="Imagen de ${instrument.name}"
-                         onerror="this.onerror=null; this.src='${genericPlaceholderUrl}';"
-                    >
-                    <p class="text-lg font-semibold text-gray-800">${instrument.name}</p>
-                    <button class="mt-2 button-secondary text-xs play-instrument-sound" data-instrument-name="${instrument.name}" data-sound-file="${instrument.sound}">Escuchar</button>
-                `;
-                detailInstrumentList.appendChild(instrumentItem);
+        function showModal(family) {
+            document.getElementById('detailFamilyName').textContent = family.name;
+            document.getElementById('detailFamilyDescription').textContent = family.description;
+            const list = document.getElementById('detailInstrumentList');
+            list.innerHTML = "";
+            family.instruments.forEach(inst => {
+                const item = document.createElement('div');
+                item.className = "bg-gray-100 p-3 rounded-lg flex flex-col items-center";
+                item.innerHTML = `
+                    <img class="instrument-image" src="${inst.imageUrl}" onerror="this.src='https://placehold.co/150x80?text=Sin+Imagen'">
+                    <p class="font-bold mt-2">${inst.name}</p>
+                    <button class="mt-1 text-blue-600 text-xs font-bold" onclick="playSound('${inst.sound}')">Escuchar</button>`;
+                list.appendChild(item);
             });
-
-            // Add event listeners for play buttons in the modal
-            document.querySelectorAll('.play-instrument-sound').forEach(button => {
-                button.addEventListener('click', (event) => {
-                    event.stopPropagation();
-                    const instrumentName = event.target.dataset.instrumentName;
-                    const soundFile = event.target.dataset.soundFile;
-                    playSound(instrumentName, soundFile, false);
-                });
-            });
-
-            instrumentDetailModal.classList.remove('hidden');
+            document.getElementById('instrumentDetailModal').classList.remove('hidden');
         }
 
-        // Event listener for closing the modal via the "Cerrar" button (unchanged)
-        closeDetailModal.addEventListener('click', () => {
-            instrumentDetailModal.classList.add('hidden');
-            feedbackMessage.textContent = '';
-            stopCurrentAudio();
-        });
-
-        // Event listener for closing the modal by clicking outside its content (unchanged)
-        instrumentDetailModal.addEventListener('click', (event) => {
-            if (event.target === instrumentDetailModal) {
-                instrumentDetailModal.classList.add('hidden');
-                feedbackMessage.textContent = '';
-                stopCurrentAudio();
-            }
-        });
-
-        // --- Quiz Section Functions (unchanged) ---
-        function initializeQuizInstruments() {
-            quizInstruments = [];
-            instrumentFamilies.forEach(family => {
-                family.instruments.forEach(instrument => {
-                    quizInstruments.push({
-                        name: instrument.name,
-                        family: family.name,
-                        sound: instrument.sound
-                    });
-                });
-            });
-            quizInstruments = quizInstruments.sort(() => 0.5 - Math.random());
-        }
-
+        // Lógica de Juego
         function startQuiz() {
-            score = 0;
-            questionNumber = 0;
-            scoreDisplay.textContent = score;
-            totalQuestionsDisplay.textContent = totalQuizQuestions;
-            initializeQuizInstruments();
+            score = 0; questionNumber = 0;
+            quizPool = instrumentFamilies.flatMap(f => f.instruments.map(i => ({...i, family: f.name}))).sort(() => Math.random() - 0.5);
             nextQuestion();
-            quizResultModal.classList.add('hidden');
         }
 
         function nextQuestion() {
             questionNumber++;
-            if (questionNumber > totalQuizQuestions) {
-                endQuiz();
-                return;
-            }
-
-            stopCurrentAudio();
-
-            currentQuestionDisplay.textContent = questionNumber;
-            updateProgressBar();
-            feedbackMessage.textContent = '';
+            if (questionNumber > 10) return endQuiz();
+            
             selectedOption = null;
+            document.getElementById('currentQuestion').textContent = questionNumber;
+            document.getElementById('score').textContent = score;
+            document.getElementById('progressBar').style.width = `${(questionNumber/10)*100}%`;
+            document.getElementById('feedbackMessage').textContent = "";
+            document.getElementById('nextQuestionBtn').classList.add('hidden');
+            document.getElementById('checkAnswerBtn').classList.remove('hidden');
+            document.getElementById('checkAnswerBtn').disabled = true;
+            document.getElementById('playAudioBtn').disabled = false;
 
-            checkAnswerBtn.classList.remove('hidden');
-            checkAnswerBtn.disabled = true;
-            checkAnswerBtn.classList.add('opacity-50', 'cursor-not-allowed');
-
-            nextQuestionBtn.classList.add('hidden');
-
-            currentQuizInstrument = quizInstruments[questionNumber - 1];
-
-            let options = new Set();
-            let correctAnswerValue;
-
-            if (questionNumber <= 3) {
-                correctAnswerValue = currentQuizInstrument.family;
-                options.add(correctAnswerValue);
-                while (options.size < 4) {
-                    const randomFamily = instrumentFamilies[Math.floor(Math.random() * instrumentFamilies.length)].name;
-                    options.add(randomFamily);
-                }
-                renderQuizOptions(Array.from(options).sort(() => 0.5 - Math.random()), 'family');
-            }
-            else if (questionNumber > 3 && questionNumber <= 7) {
-                correctAnswerValue = currentQuizInstrument.name;
-                options.add(correctAnswerValue);
-                const allInstrumentNames = quizInstruments.map(inst => inst.name);
-                while (options.size < 4) {
-                    const randomInstrumentName = allInstrumentNames[Math.floor(Math.random() * allInstrumentNames.length)];
-                    if (randomInstrumentName !== correctAnswerValue) {
-                        options.add(randomInstrumentName);
-                    }
-                }
-                renderQuizOptions(Array.from(options).sort(() => 0.5 - Math.random()), 'instrument');
-            }
-            else {
-                correctAnswerValue = currentQuizInstrument.name;
-                options.add(correctAnswerValue);
-                const sameFamilyInstruments = instrumentFamilies.find(f => f.name === currentQuizInstrument.family).instruments;
-                const otherSameFamilyInstruments = sameFamilyInstruments.filter(inst => inst.name !== correctAnswerValue);
-
-                let count = 0;
-                while (options.size < 4 && count < otherSameFamilyInstruments.length) {
-                    options.add(otherSameFamilyInstruments[count].name);
-                    count++;
-                }
-
-                const allInstrumentNames = quizInstruments.map(inst => inst.name);
-                while (options.size < 4) {
-                    const randomInstrumentName = allInstrumentNames[Math.floor(Math.random() * allInstrumentNames.length)];
-                    if (!options.has(randomInstrumentName)) {
-                        options.add(randomInstrumentName);
-                    }
-                }
-                renderQuizOptions(Array.from(options).sort(() => 0.5 - Math.random()), 'instrument');
-            }
-
-            playAudioBtn.disabled = false;
+            currentQuizInstrument = quizPool[questionNumber - 1];
+            renderOptions();
         }
 
-        function renderQuizOptions(options, type) {
-            quizOptionsContainer.innerHTML = '';
-            options.forEach(option => {
-                const optionDiv = document.createElement('div');
-                optionDiv.className = 'quiz-option p-4 rounded-xl shadow-sm text-center text-xl font-semibold text-gray-800 cursor-pointer';
-                optionDiv.textContent = option;
-                optionDiv.dataset.value = option;
-                optionDiv.dataset.type = type;
-                optionDiv.addEventListener('click', () => selectOption(optionDiv));
-                optionDiv.style.pointerEvents = 'auto';
-                quizOptionsContainer.appendChild(optionDiv);
-            });
-        }
+        function renderOptions() {
+            const container = document.getElementById('quizOptions');
+            container.innerHTML = "";
+            
+            // Lógica de dificultad: preguntas 1-3 familia, resto nombre de instrumento
+            const isFamilyType = questionNumber <= 3;
+            const correctValue = isFamilyType ? currentQuizInstrument.family : currentQuizInstrument.name;
+            
+            let options = [correctValue];
+            const pool = isFamilyType ? instrumentFamilies.map(f => f.name) : quizPool.map(i => i.name);
+            
+            while(options.length < 4) {
+                const rand = pool[Math.floor(Math.random() * pool.length)];
+                if(!options.includes(rand)) options.push(rand);
+            }
 
-        function selectOption(element) {
-            document.querySelectorAll('.quiz-option').forEach(opt => {
-                opt.classList.remove('selected', 'correct', 'incorrect');
+            options.sort(() => Math.random() - 0.5).forEach(opt => {
+                const btn = document.createElement('div');
+                btn.className = "quiz-option p-4 rounded-xl text-center font-bold";
+                btn.textContent = opt;
+                btn.onclick = () => {
+                    document.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedOption = opt;
+                    document.getElementById('checkAnswerBtn').disabled = false;
+                    document.getElementById('checkAnswerBtn').classList.remove('opacity-50', 'cursor-not-allowed');
+                };
+                container.appendChild(btn);
             });
-            element.classList.add('selected');
-            selectedOption = element.dataset.value;
-            checkAnswerBtn.disabled = false;
-            checkAnswerBtn.classList.remove('opacity-50', 'cursor-not-allowed');
         }
 
         function checkAnswer() {
-            if (!selectedOption) return;
+            const isFamilyType = questionNumber <= 3;
+            const correctValue = isFamilyType ? currentQuizInstrument.family : currentQuizInstrument.name;
+            const isCorrect = selectedOption === correctValue;
 
-            playAudioBtn.disabled = true;
-
-            let correctAnswer;
-            let feedbackText;
-
-            if (questionNumber <= 3) {
-                correctAnswer = currentQuizInstrument.family;
-                if (selectedOption === correctAnswer) {
-                    feedbackText = `¡Correcto! 🎉 La familia era: ${correctAnswer}`;
-                } else {
-                    feedbackText = `¡Incorrecto! 😔 La familia correcta era: ${correctAnswer}`;
-                }
-            } else {
-                correctAnswer = currentQuizInstrument.name;
-                if (selectedOption === correctAnswer) {
-                    feedbackText = `¡Correcto! 🎉 La respuesta era: ${correctAnswer}`;
-                } else {
-                    feedbackText = `¡Incorrecto! 😔 La respuesta correcta era: ${correctAnswer}`;
-                }
-            }
-
-            const allOptions = document.querySelectorAll('.quiz-option');
-
-            allOptions.forEach(opt => {
+            if(isCorrect) score += 10;
+            
+            document.querySelectorAll('.quiz-option').forEach(opt => {
                 opt.classList.remove('selected');
-                if (opt.dataset.value === correctAnswer) {
-                    opt.classList.add('correct');
-                } else {
-                    opt.classList.add('incorrect');
-                }
-                opt.style.pointerEvents = 'none';
+                opt.style.pointerEvents = "none";
+                if(opt.textContent === correctValue) opt.classList.add('correct');
+                else if(opt.textContent === selectedOption) opt.classList.add('incorrect');
             });
 
-            feedbackMessage.textContent = feedbackText;
-            feedbackMessage.classList.remove('text-green-600', 'text-blue-600', 'text-red-600');
-            feedbackMessage.classList.add(selectedOption === correctAnswer ? 'text-green-600' : 'text-red-600');
+            const fb = document.getElementById('feedbackMessage');
+            fb.textContent = isCorrect ? "¡Correcto! 🎉" : `Incorrecto 😔 Era ${correctValue}`;
+            fb.className = `mt-6 text-center text-2xl font-bold ${isCorrect ? 'text-green-600' : 'text-red-600'}`;
 
-            if (selectedOption === correctAnswer) {
-                score += 10;
-            }
-            scoreDisplay.textContent = score;
-            checkAnswerBtn.classList.add('hidden');
-            nextQuestionBtn.classList.remove('hidden');
-
-            playSound(currentQuizInstrument.name, currentQuizInstrument.sound, false, true);
-        }
-
-        function updateProgressBar() {
-            const progress = (questionNumber / totalQuizQuestions) * 100;
-            progressBar.style.width = `${progress}%`;
+            document.getElementById('checkAnswerBtn').classList.add('hidden');
+            document.getElementById('nextQuestionBtn').classList.remove('hidden');
+            document.getElementById('playAudioBtn').disabled = true;
+            playSound(currentQuizInstrument.sound);
         }
 
         function endQuiz() {
-            resultTitle.textContent = '¡Juego Terminado!';
-            resultScore.textContent = `Tu puntuación final es: ${score} puntos.`;
-            if (score === totalQuizQuestions * 10) {
-                resultTitle.textContent = '¡Felicidades, eres un experto! 🏆';
-            } else if (score >= totalQuizQuestions * 5) {
-                resultTitle.textContent = '¡Buen trabajo! Sigue practicando. 👍';
-            } else {
-                resultTitle.textContent = '¡Sigue intentándolo! 💪';
-            }
-            quizResultModal.classList.remove('hidden');
-            stopCurrentAudio();
+            document.getElementById('resultTitle').textContent = score >= 80 ? "¡Excelente! 🏆" : "¡Buen intento! 💪";
+            document.getElementById('resultScore').textContent = `Puntuación: ${score} / 100`;
+            document.getElementById('quizResultModal').classList.remove('hidden');
         }
 
-        // --- Event Listeners (unchanged) ---
-        learnBtn.addEventListener('click', () => showView('learn'));
-        quizBtn.addEventListener('click', () => showView('quiz'));
+        // Eventos Globales
+        document.getElementById('learnBtn').onclick = () => showView('learn');
+        document.getElementById('quizBtn').onclick = () => showView('quiz');
+        document.getElementById('closeDetailModal').onclick = () => document.getElementById('instrumentDetailModal').classList.add('hidden');
+        document.getElementById('playAudioBtn').onclick = () => playSound(currentQuizInstrument.sound, "quiz");
+        document.getElementById('checkAnswerBtn').onclick = checkAnswer;
+        document.getElementById('nextQuestionBtn').onclick = nextQuestion;
+        document.getElementById('restartQuizBtn').onclick = startQuiz;
 
-        playAudioBtn.addEventListener('click', () => {
-            if (currentQuizInstrument) {
-                playSound(currentQuizInstrument.name, currentQuizInstrument.sound, true);
-            }
-        });
+        window.onclick = (e) => {
+            if(e.target.id === 'instrumentDetailModal') document.getElementById('instrumentDetailModal').classList.add('hidden');
+        };
 
-        checkAnswerBtn.addEventListener('click', checkAnswer);
-        nextQuestionBtn.addEventListener('click', nextQuestion);
-        restartQuizBtn.addEventListener('click', () => {
-            stopCurrentAudio();
-            startQuiz();
-        });
-
-        // Initial view load
-        document.addEventListener('DOMContentLoaded', () => {
-            authenticateUser();
-            showView('learn');
-        });
+        // Inicio
+        document.addEventListener('DOMContentLoaded', () => showView('learn'));
     </script>
 </body>
 </html>
