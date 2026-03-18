@@ -140,26 +140,30 @@
 
         <!-- Main Navigation/View Selector -->
         <div class="flex justify-center gap-4 mb-6">
-            <button id="learnBtn" class="button-primary">Aprender</button>
-            <button id="quizBtn" class="button-primary">Jugar</button>
+            <button id="learnBtn" class="button-primary flex items-center justify-center gap-2">📖 Aprender</button>
+            <button id="quizBtn" class="button-secondary flex items-center justify-center gap-2">🎧 Jugar</button>
         </div>
 
         <!-- Learning Section -->
         <div id="learnSection" class="hidden">
             <h2 class="text-3xl font-bold text-gray-700 mb-6 text-center">Familias de Instrumentos</h2>
-            <div id="familyList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Cambiamos a flex-col para apilar las tarjetas -->
+            <div id="familyList" class="flex flex-col gap-6">
                 <!-- Family cards injected via JS -->
             </div>
             
             <!-- Instrument Detail Modal -->
             <div id="instrumentDetailModal" class="fixed inset-0 hidden z-50 modal p-4">
-                <div class="modal-content p-8 max-w-lg w-full text-center max-h-[90vh] overflow-y-auto">
+                <div id="detailModalContent" class="modal-content bg-white p-8 max-w-lg w-full text-center max-h-[90vh] overflow-y-auto">
                     <h3 id="detailFamilyName" class="text-3xl font-bold text-gray-800 mb-4"></h3>
                     <p id="detailFamilyDescription" class="text-gray-700 mb-6"></p>
-                    <h4 class="text-2xl font-semibold text-gray-700 mb-4">Ejemplos de Instrumentos:</h4>
-                    <div id="detailInstrumentList" class="grid grid-cols-2 gap-4 mb-6">
+                    
+                    <!-- Contenedor para los subgrupos de instrumentos -->
+                    <div id="detailInstrumentList" class="mb-6">
                         <!-- Instruments injected via JS -->
                     </div>
+                    
                     <button id="closeDetailModal" class="button-primary">Cerrar</button>
                 </div>
             </div>
@@ -219,46 +223,78 @@
         const instrumentFamilies = [
             {
                 name: "Cuerda",
-                description: "Los instrumentos de cuerda producen sonido mediante la vibración de sus cuerdas. Estas vibraciones pueden ser causadas al frotarlas con un arco, pulsarlas con los dedos o un plectro, o golpearlas.",
+                description: "Los instrumentos de cuerda producen sonido mediante la vibración de sus cuerdas. Estas vibraciones pueden ser causadas al frotarlas con un arco (<strong>cuerda frotada</strong>), pulsarlas con los dedos o un plectro (<strong>cuerda pulsada</strong>), o golpearlas (<strong>cuerda percutida</strong>).",
                 icon: "🎻",
-                instruments: [
-                    { name: "Violín", sound: "sounds/violin.mp3", imageUrl: "images/violin.jpg" },
-                    { name: "Guitarra", sound: "sounds/guitar.mp3", imageUrl: "images/guitarra.jpg" },
-                    { name: "Arpa", sound: "sounds/harp.mp3", imageUrl: "images/arpa.jpg" },
-                    { name: "Piano", sound: "sounds/piano.mp3", imageUrl: "images/piano.jpg" }
+                bgColor: "bg-yellow-50",
+                subgroups: [
+                    {
+                        name: "Cuerda frotada",
+                        instruments: [
+                            { name: "Violín", sound: "sounds/violin.mp3", imageUrl: "images/violin.jpg" },
+                            { name: "Contrabajo", sound: "sounds/contrabajo.mp3", imageUrl: "images/contrabajo.jpg" }
+                        ]
+                    },
+                    {
+                        name: "Cuerda pulsada",
+                        instruments: [
+                            { name: "Guitarra", sound: "sounds/guitar.mp3", imageUrl: "images/guitarra.jpg" },
+                            { name: "Arpa", sound: "sounds/harp.mp3", imageUrl: "images/arpa.jpg" }
+                        ]
+                    },
+                    {
+                        name: "Cuerda percutida",
+                        instruments: [
+                            { name: "Piano", sound: "sounds/piano.mp3", imageUrl: "images/piano.jpg" }
+                        ]
+                    }
                 ]
             },
             {
-                name: "Viento Madera",
-                description: "Estos instrumentos producen sonido cuando el aire pasa a través de una lengüeta (simple o doble) o a través de un agujero, haciendo vibrar una columna de aire dentro del instrumento.",
+                name: "Viento",
+                description: "Estos instrumentos producen sonido haciendo vibrar una columna de aire dentro del instrumento. Esto ocurre cuando el aire pasa a través de una lengüeta o un agujero (<strong>viento madera</strong>), o por la vibración de los labios del músico contra una boquilla (<strong>viento metal</strong>).",
                 icon: "🎷",
-                instruments: [
-                    { name: "Flauta", sound: "sounds/flute.mp3", imageUrl: "images/flauta.jpg" },
-                    { name: "Clarinete", sound: "sounds/clarinet.mp3", imageUrl: "images/clarinete.jpg" },
-                    { name: "Fagot", sound: "sounds/bassoon.mp3", imageUrl: "images/fagot.jpg" },
-                    { name: "Saxofón", sound: "sounds/saxophone.mp3", imageUrl: "images/saxofon.jpg" }
-                ]
-            },
-            {
-                name: "Viento Metal",
-                description: "El sonido se produce por la vibración de los labios del músico contra una boquilla en forma de copa, que a su vez hace vibrar la columna de aire dentro del instrumento.",
-                icon: "🎺",
-                instruments: [
-                    { name: "Trompeta", sound: "sounds/trumpet.mp3", imageUrl: "images/trompeta.jpg" },
-                    { name: "Trombón", sound: "sounds/trombone.mp3", imageUrl: "images/trombon.jpg" },
-                    { name: "Tuba", sound: "sounds/tuba.mp3", imageUrl: "images/tuba.jpg" },
-                    { name: "Trompa", sound: "sounds/frenchhorn.mp3", imageUrl: "images/trompa.jpg" }
+                bgColor: "bg-blue-50",
+                subgroups: [
+                    {
+                        name: "Viento madera",
+                        instruments: [
+                            { name: "Flauta", sound: "sounds/flute.mp3", imageUrl: "images/flauta.jpg" },
+                            { name: "Clarinete", sound: "sounds/clarinet.mp3", imageUrl: "images/clarinete.jpg" },
+                            { name: "Fagot", sound: "sounds/bassoon.mp3", imageUrl: "images/fagot.jpg" },
+                            { name: "Saxofón", sound: "sounds/saxophone.mp3", imageUrl: "images/saxofon.jpg" }
+                        ]
+                    },
+                    {
+                        name: "Viento metal",
+                        instruments: [
+                            { name: "Trompeta", sound: "sounds/trumpet.mp3", imageUrl: "images/trompeta.jpg" },
+                            { name: "Trombón", sound: "sounds/trombone.mp3", imageUrl: "images/trombon.jpg" },
+                            { name: "Tuba", sound: "sounds/tuba.mp3", imageUrl: "images/tuba.jpg" },
+                            { name: "Trompa", sound: "sounds/frenchhorn.mp3", imageUrl: "images/trompa.jpg" }
+                        ]
+                    }
                 ]
             },
             {
                 name: "Percusión",
-                description: "Los instrumentos de percusión producen sonido al ser golpeados, agitados o raspados. Pueden tener altura definida (como el xilófono) o indefinida (como la batería).",
+                description: "Los instrumentos de percusión producen sonido al ser golpeados, agitados o raspados. Pueden tener <strong>altura definida</strong> (como el xilófono o los timbales), o <strong>altura indefinida</strong> (como la caja china o el triángulo).",
                 icon: "🥁",
-                instruments: [
-                    { name: "Timbales", sound: "sounds/timpani.mp3", imageUrl: "images/timbales.jpg" },
-                    { name: "Xilófono", sound: "sounds/xylophone.mp3", imageUrl: "images/xilofono.jpg" },
-                    { name: "Caja china", sound: "sounds/woodblock.mp3", imageUrl: "images/cajachina.jpg" },
-                    { name: "Triángulo", sound: "sounds/triangle.mp3", imageUrl: "images/triangulo.jpg" }
+                bgColor: "bg-pink-50",
+                subgroups: [
+                    {
+                        name: "Altura definida",
+                        instruments: [
+                            { name: "Timbales", sound: "sounds/timpani.mp3", imageUrl: "images/timbales.jpg" },
+                            { name: "Xilófono", sound: "sounds/xylophone.mp3", imageUrl: "images/xilofono.jpg" }
+                        ]
+                    },
+                    {
+                        name: "Altura indefinida",
+                        instruments: [
+                            { name: "Caja china", sound: "sounds/woodblock.mp3", imageUrl: "images/cajachina.jpg" },
+                            { name: "Triángulo", sound: "sounds/triangle.mp3", imageUrl: "images/triangulo.jpg" }
+                        ]
+                    }
                 ]
             }
         ];
@@ -275,6 +311,7 @@
         // Learning Section
         const familyList = document.getElementById('familyList');
         const instrumentDetailModal = document.getElementById('instrumentDetailModal');
+        const detailModalContent = document.getElementById('detailModalContent');
         const closeDetailModal = document.getElementById('closeDetailModal');
         const detailFamilyName = document.getElementById('detailFamilyName');
         const detailFamilyDescription = document.getElementById('detailFamilyDescription');
@@ -381,9 +418,13 @@
             quizSection.classList.add('hidden');
             
             if (view === 'learn') {
+                learnBtn.className = 'button-primary flex items-center justify-center gap-2';
+                quizBtn.className = 'button-secondary flex items-center justify-center gap-2';
                 learnSection.classList.remove('hidden');
                 renderFamilyCards();
             } else if (view === 'quiz') {
+                learnBtn.className = 'button-secondary flex items-center justify-center gap-2';
+                quizBtn.className = 'button-primary flex items-center justify-center gap-2';
                 quizSection.classList.remove('hidden');
                 startQuiz();
             }
@@ -397,11 +438,12 @@
             familyList.innerHTML = '';
             instrumentFamilies.forEach(family => {
                 const card = document.createElement('div');
-                card.className = 'family-card bg-blue-50 p-6 rounded-xl shadow-md flex flex-col items-center text-center flex-grow h-full'; 
+                card.className = `family-card ${family.bgColor} p-6 rounded-xl shadow-md flex flex-col items-center text-center flex-grow h-full`; 
                 card.innerHTML = `
                     <div class="text-6xl mb-4">${family.icon}</div>
                     <h3 class="text-2xl font-bold text-gray-800 mb-2">${family.name}</h3>
-                    <p class="text-gray-600 text-sm flex-grow">${family.description.substring(0, 100)}...</p>
+                    <!-- Mostramos la descripción completa utilizando innerHTML para respetar las negritas -->
+                    <p class="text-gray-600 text-sm flex-grow">${family.description}</p>
                     <button class="mt-4 button-secondary text-sm">Ver más</button>
                 `;
                 card.addEventListener('click', () => {
@@ -414,30 +456,48 @@
 
         function showInstrumentDetail(family) {
             detailFamilyName.textContent = family.name;
-            detailFamilyDescription.textContent = family.description;
+            // Usamos innerHTML en lugar de textContent para que renderice las negritas
+            detailFamilyDescription.innerHTML = family.description;
             detailInstrumentList.innerHTML = '';
             
+            // Actualizamos el color de fondo de la ventana modal según la familia
+            detailModalContent.className = `modal-content ${family.bgColor} p-8 max-w-lg w-full text-center max-h-[90vh] overflow-y-auto`;
+
             // Fallback para cuando la imagen local no existe
             const genericPlaceholderUrl = "https://placehold.co/150x80/d1d5db/4b5563?text=IMAGEN+NO+DISPONIBLE";
 
-            family.instruments.forEach(instrument => {
-                const instrumentItem = document.createElement('div');
-                instrumentItem.className = 'bg-gray-100 p-3 rounded-lg flex flex-col items-center shadow-sm';
+            family.subgroups.forEach(subgroup => {
+                // Título del subgrupo manteniendo la tipografía solicitada
+                const subgroupTitle = document.createElement('h4');
+                subgroupTitle.className = 'text-2xl font-semibold text-gray-700 mt-6 mb-4 text-left border-b-2 border-gray-200 pb-2';
+                subgroupTitle.textContent = subgroup.name;
+                detailInstrumentList.appendChild(subgroupTitle);
+
+                // Contenedor grid para los instrumentos de este subgrupo
+                const instrumentsGrid = document.createElement('div');
+                instrumentsGrid.className = 'grid grid-cols-2 gap-4 mb-2';
+
+                subgroup.instruments.forEach(instrument => {
+                    const instrumentItem = document.createElement('div');
+                    instrumentItem.className = 'bg-gray-100 p-3 rounded-lg flex flex-col items-center shadow-sm';
+                    
+                    instrumentItem.innerHTML = `
+                        <img class="instrument-image mb-2" 
+                             src="${instrument.imageUrl}" 
+                             alt="Imagen de ${instrument.name}"
+                             onerror="this.onerror=null; this.src='${genericPlaceholderUrl}';"
+                        >
+                        <p class="text-lg font-semibold text-gray-800">${instrument.name}</p>
+                        <button class="mt-2 button-secondary text-xs play-instrument-sound" 
+                                data-instrument-name="${instrument.name}" 
+                                data-sound-file="${instrument.sound}">
+                            Escuchar
+                        </button>
+                    `;
+                    instrumentsGrid.appendChild(instrumentItem);
+                });
                 
-                instrumentItem.innerHTML = `
-                    <img class="instrument-image mb-2" 
-                         src="${instrument.imageUrl}" 
-                         alt="Imagen de ${instrument.name}"
-                         onerror="this.onerror=null; this.src='${genericPlaceholderUrl}';"
-                    >
-                    <p class="text-lg font-semibold text-gray-800">${instrument.name}</p>
-                    <button class="mt-2 button-secondary text-xs play-instrument-sound" 
-                            data-instrument-name="${instrument.name}" 
-                            data-sound-file="${instrument.sound}">
-                        Escuchar
-                    </button>
-                `;
-                detailInstrumentList.appendChild(instrumentItem);
+                detailInstrumentList.appendChild(instrumentsGrid);
             });
 
             document.querySelectorAll('.play-instrument-sound').forEach(button => {
@@ -473,11 +533,21 @@
         function initializeQuizInstruments() {
             quizInstruments = [];
             instrumentFamilies.forEach(family => {
-                family.instruments.forEach(instrument => {
-                    quizInstruments.push({
-                        name: instrument.name,
-                        family: family.name,
-                        sound: instrument.sound
+                family.subgroups.forEach(subgroup => {
+                    subgroup.instruments.forEach(instrument => {
+                        // Definimos la categoría personalizada para el juego
+                        let categoryForQuiz = family.name;
+                        if (family.name === 'Viento') {
+                            categoryForQuiz = subgroup.name;
+                        }
+
+                        quizInstruments.push({
+                            name: instrument.name,
+                            family: family.name,
+                            subgroup: subgroup.name,
+                            quizCategory: categoryForQuiz,
+                            sound: instrument.sound
+                        });
                     });
                 });
             });
@@ -521,17 +591,16 @@
             let correctAnswerValue;
             let type;
 
-            if (questionNumber <= 3) {
-                // First 3 questions: Guess the Family
-                correctAnswerValue = currentQuizInstrument.family;
-                type = 'family';
-                options.add(correctAnswerValue);
-                while (options.size < 4) {
-                    const randomFamily = instrumentFamilies[Math.floor(Math.random() * instrumentFamilies.length)].name;
-                    options.add(randomFamily);
-                }
-            } else if (questionNumber > 3 && questionNumber <= 7) {
-                 // Questions 4-7: Random Instruments
+            if (questionNumber <= 4) {
+                // Primeras 4 preguntas: Adivina la categoría mixta (Cuerda, Viento madera, Viento metal, Percusión)
+                correctAnswerValue = currentQuizInstrument.quizCategory;
+                type = 'category';
+                
+                // Las 4 opciones son siempre estas fijas, como solicitaste
+                ['Cuerda', 'Viento madera', 'Viento metal', 'Percusión'].forEach(cat => options.add(cat));
+
+            } else if (questionNumber > 4 && questionNumber <= 7) {
+                 // Questions 5-7: Random Instruments
                 correctAnswerValue = currentQuizInstrument.name;
                 type = 'instrument';
                 options.add(correctAnswerValue);
@@ -545,8 +614,14 @@
                 correctAnswerValue = currentQuizInstrument.name;
                 type = 'instrument';
                 options.add(correctAnswerValue);
-                const sameFamily = instrumentFamilies.find(f => f.name === currentQuizInstrument.family).instruments;
-                const siblings = sameFamily.filter(inst => inst.name !== correctAnswerValue);
+                
+                const sameFamily = instrumentFamilies.find(f => f.name === currentQuizInstrument.family);
+                let familyInstruments = [];
+                sameFamily.subgroups.forEach(sub => {
+                    familyInstruments.push(...sub.instruments);
+                });
+                
+                const siblings = familyInstruments.filter(inst => inst.name !== correctAnswerValue);
                 
                 siblings.forEach(sib => {
                     if (options.size < 4) options.add(sib.name);
@@ -593,11 +668,11 @@
             let correctAnswer;
             let feedbackText;
 
-            if (questionNumber <= 3) {
-                correctAnswer = currentQuizInstrument.family;
+            if (questionNumber <= 4) {
+                correctAnswer = currentQuizInstrument.quizCategory;
                 feedbackText = selectedOption === correctAnswer 
-                    ? `¡Correcto! 🎉 La familia era: ${correctAnswer}`
-                    : `¡Incorrecto! 😔 La familia correcta era: ${correctAnswer}`;
+                    ? `¡Correcto! 🎉 La respuesta era: ${correctAnswer}`
+                    : `¡Incorrecto! 😔 La respuesta correcta era: ${correctAnswer}`;
             } else {
                 correctAnswer = currentQuizInstrument.name;
                 feedbackText = selectedOption === correctAnswer
